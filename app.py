@@ -7,8 +7,7 @@ app = Flask(__name__)
 eng_json = json.loads(
             open("English_reader.json", encoding="utf-8").read())
 kitaps = str(pa.Book_attributes.ids(eng_json))
-selected_book = "FeverDream"
-print(type(selected_book))
+selected_book = input("Kitap ismi giriniz.\n")
 book_details = pa.Book_attributes.detail(eng_json,selected_book)
 book_details = str(book_details)
 
