@@ -1,44 +1,25 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import json
-import pull_att as pa
+from models import Book
+
+data = json.loads(open("data/database.json", encoding="utf-8").read())
+
 app = Flask(__name__)
+app.config["DEBUG"] = True
+
+book = Book(data=data)
 
 
-eng_json = json.loads(
-            open("English_reader.json", encoding="utf-8").read())
-kitaps = str(pa.Book_attributes.ids(eng_json))
-selected_book = input("Kitap ismi giriniz.\n")
-book_details = pa.Book_attributes.detail(eng_json,selected_book)
-book_details = str(book_details)
-
-@app.route("/")
-def start_api():
-    project_name = "English Reader"
-    return project_name
-
-@app.route("/Enis.dev/Books")
-def public():
-    # id
-    # Book_name
-    # book_author
-    # level
-    return kitaps
+@app.route("/", methods=["POST"])
+def home():
+	return jsonify(book.get_all_books())
 
 
-@app.route(f"/Enis.dev/Books/{selected_book}")
+@app.route("/book", methods=["POST"])
 def book_detail():
-    return book_details
-    # id
-    # name
-    # description
-    # page_number
-    # other_details
-
-@app.route("/Enis.dev/Books/Details/Pages")
-def book_pages():
-    pass
-
+	book_name = request.args.get("book_name")
+	return jsonify(book.get_book(book_name=book_name))
 
 
 if __name__ == '__main__':
-    app.run()
+	app.run()
